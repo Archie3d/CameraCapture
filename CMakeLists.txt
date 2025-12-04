@@ -160,7 +160,7 @@ if(CCAP_BUILD_SHARED)
 endif()
 
 if(APPLE)
-    target_compile_options(ccap PUBLIC -fobjc-arc)
+    target_compile_options(ccap PRIVATE -fobjc-arc)
     target_link_libraries(ccap
         "-framework Foundation"
         "-framework AVFoundation"
