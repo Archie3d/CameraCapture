@@ -399,12 +399,13 @@ std::vector<std::string> ProviderDirectShow::findDeviceNames() {
     }
 
     enumerateDevices([&](IMoniker* moniker, std::string_view name) {
-        // Try to bind device, check if available
-        IBaseFilter* filter = nullptr;
-        HRESULT hr = moniker->BindToObject(0, 0, IID_IBaseFilter, (void**)&filter);
-        if (SUCCEEDED(hr) && filter) {
+        // Try to get device properties, check if available
+        IPropertyBag* pPropBag = nullptr;
+        HRESULT hr = moniker->BindToStorage(0, 0, IID_IPropertyBag, (void**)&pPropBag);
+
+        if (SUCCEEDED(hr) && pPropBag) {
             m_allDeviceNames.emplace_back(name.data(), name.size());
-            filter->Release();
+            pPropBag->Release();
         } else {
             CCAP_LOG_I("ccap: \"%s\" is not a valid video capture device, removed\n", name.data());
         }
